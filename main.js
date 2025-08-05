@@ -1,6 +1,7 @@
 // main.js
 const canvas = document.getElementById("gameCanvas");
 const scene = new THREE.Scene();
+scene.background = new THREE.Color(0x222222);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -16,12 +17,13 @@ scene.add(player);
 
 let lane = 0;
 const laneWidth = 2;
-player.position.z = -5;
+player.position.z = 5;
 
 const groundGeometry = new THREE.BoxGeometry(10, 0.1, 100);
 const groundMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.position.y = -1;
+ground.position.z = 45;
 scene.add(ground);
 
 const obstacles = [];
@@ -33,7 +35,7 @@ function spawnObstacle() {
   const randomLane = Math.floor(Math.random() * 3) - 1;
   obstacle.position.x = randomLane * laneWidth;
   obstacle.position.y = 0;
-  obstacle.position.z = 50;
+  obstacle.position.z = -50;
   scene.add(obstacle);
   obstacles.push(obstacle);
 }
@@ -45,7 +47,7 @@ function spawnCoin() {
   const randomLane = Math.floor(Math.random() * 3) - 1;
   coin.position.x = randomLane * laneWidth;
   coin.position.y = 0.5;
-  coin.position.z = 50;
+  coin.position.z = -50;
   scene.add(coin);
   coins.push(coin);
 }
@@ -73,7 +75,7 @@ function startGame() {
   score = 0;
   coinCount = 0;
   speed = 0.2;
-  player.position.set(0, 0, -5);
+  player.position.set(0, 0, 5);
   lane = 0;
   obstacles.forEach(o => scene.remove(o));
   obstacles.length = 0;
@@ -106,8 +108,8 @@ document.addEventListener("keydown", (event) => {
 });
 
 camera.position.y = 5;
-camera.position.z = 5;
-camera.lookAt(0, 0, -5);
+camera.position.z = 10;
+camera.lookAt(0, 0, 5);
 
 let obstacleInterval = setInterval(spawnObstacle, 2000);
 let coinInterval = setInterval(spawnCoin, 1500);
@@ -126,7 +128,7 @@ function animate() {
   }
 
   obstacles.forEach(obstacle => {
-    obstacle.position.z -= speed;
+    obstacle.position.z += speed;
     if (
       Math.abs(obstacle.position.z - player.position.z) < 1 &&
       Math.abs(obstacle.position.x - player.position.x) < 1 &&
@@ -141,7 +143,7 @@ function animate() {
 
   coins.forEach((coin, index) => {
     coin.rotation.y += 0.1;
-    coin.position.z -= speed;
+    coin.position.z += speed;
     if (
       Math.abs(coin.position.z - player.position.z) < 1 &&
       Math.abs(coin.position.x - player.position.x) < 1
