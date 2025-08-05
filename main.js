@@ -1,7 +1,7 @@
 // main.js
 const canvas = document.getElementById("gameCanvas");
 const scene = new THREE.Scene();
-scene.background = new THREE.Color(0x222222);
+scene.background = new THREE.Color(0x111111);
 const camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
 const renderer = new THREE.WebGLRenderer({ canvas });
 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -25,6 +25,25 @@ const ground = new THREE.Mesh(groundGeometry, groundMaterial);
 ground.position.y = -1;
 ground.position.z = 45;
 scene.add(ground);
+
+// Crypto-themed skyscraper background
+function createBuildings() {
+  const cryptoLogos = [0x00ffcc, 0xffcc00, 0x9900ff, 0xff0066, 0x00ccff];
+  for (let i = -50; i <= 50; i += 5) {
+    for (let side of [-15, 15]) {
+      const width = Math.random() * 1 + 1;
+      const height = Math.random() * 5 + 5;
+      const depth = Math.random() * 1 + 1;
+      const color = cryptoLogos[Math.floor(Math.random() * cryptoLogos.length)];
+      const buildingGeo = new THREE.BoxGeometry(width, height, depth);
+      const buildingMat = new THREE.MeshStandardMaterial({ color });
+      const building = new THREE.Mesh(buildingGeo, buildingMat);
+      building.position.set(side, height / 2 - 1, i);
+      scene.add(building);
+    }
+  }
+}
+createBuildings();
 
 const obstacles = [];
 const coins = [];
